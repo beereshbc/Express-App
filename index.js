@@ -33,6 +33,19 @@ app.delete("/users/:uid", (req, res) => {
   res.json({ message: `The user ${userId} is deleted successufully` });
 });
 
+//http://localhost:3000/users/things/Beeresh/12345
+app.get("/users/things/:name/:id([0-9]{5})", (req, res) => {
+  const { name, id } = req.params;
+  res.json({
+    id,
+    name,
+  });
+});
+
+app.get("*", (req, res) => {
+  res.send("The page not found its a invalid URL...!");
+});
+
 app.listen(PORT, (req, res) => {
   console.log(`The server is running on port ${PORT}`);
 });
