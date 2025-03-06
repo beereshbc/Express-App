@@ -7,12 +7,16 @@ const PORT = 3000;
 const app = express();
 app.use(express.json());
 
-app.set("view engine", "ejs");
+//form using by urlencoded with an example of name and email
+app.use(express.urlencoded({ extended: true }));
+
+app.post("/form", (req, res) => {
+  console.log(req.body);
+  res.send("form recived");
+});
 
 app.get("/", (req, res) => {
-  const name = "Beereshkumar";
-  const email = "bcbeereshkumar@gmail.com";
-  res.render("index", { name, email });
+  res.send("Hello Beeresh");
 });
 
 app.listen(PORT, (req, res) => {
