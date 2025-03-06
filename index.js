@@ -5,6 +5,12 @@ import router from "./Route.js";
 const app = express();
 app.use(express.json());
 
+//middelwares
+app.use((err, req, res, next) => {
+  console.error(err.message);
+  res.send("error occured dynamically");
+});
+
 const PORT = 3000;
 
 app.get("/", (req, res) => {
@@ -40,6 +46,10 @@ app.get("/users/things/:name/:id([0-9]{5})", (req, res) => {
     id,
     name,
   });
+});
+
+app.get("/error", () => {
+  throw new Error("this is test error");
 });
 
 app.get("*", (req, res) => {
