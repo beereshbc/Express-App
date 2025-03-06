@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import { loginController, SignupController } from "./controller.js";
 
-const router = Router();
+const router = express.Router();
 
 router.get("/signup", SignupController);
 router.get("/login", loginController);
