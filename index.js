@@ -11,6 +11,7 @@ app.use(express.json());
 
 await connectDB();
 
+//Creating database
 app.post("/person", async (req, res) => {
   const { name, email, password } = req.body;
   res.send("Person Added successfully");
@@ -22,6 +23,16 @@ app.post("/person", async (req, res) => {
   });
   await newPerson.save();
   console.log(newPerson);
+});
+
+//Updating database
+app.put("/person", async (req, res) => {
+  const { id } = req.body;
+
+  const personData = await Person.findByIdAndUpdate(id, {
+    name: "BBBBB",
+  });
+  res.send(personData);
 });
 
 app.get("/", (req, res) => {
