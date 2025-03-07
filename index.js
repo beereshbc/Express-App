@@ -6,6 +6,7 @@ import session from "express-session";
 const PORT = 3000;
 const app = express();
 
+app.use(express.json());
 app.use(cookieParser());
 app.use(
   session({
@@ -15,19 +16,36 @@ app.use(
   })
 );
 
-app.get("/fetch", (req, res) => {
-  if (req.session.page_viwes) {
-    req.session.page_viwes++;
-    res.send(`Your visited this site ${req.session.page_viwes} times`);
-  } else {
-    req.session.page_viwes = 1;
-    res.send("Your visited this site at first time Thank You");
-  }
+const users = [];
+
+app.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+  users.push({
+    username,
+    password,
+  });
+  res.send("User Registered");
+  console.log(users);
 });
 
-app.get("/remove-session", (req, res) => {
-  req.session.destroy();
-  res.send("The session is deleted successufully");
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find((u) => u.username === username);
+  console.log(user);
+
+  if (!user || user.password !== password) {
+    return res.send("UnAuthoraized user");
+  }
+  req.session.user = user;
+  res.send("User logged in");
+});
+
+app.get("/dashboard", (req, res) => {
+  console.log(req.session.user);
+  if (!req.session.user) {
+    return res.send("unauthorized access");
+  }
+  res.send(`Welcome ${req.session.user.username}`);
 });
 
 app.get("/", (req, res) => {
