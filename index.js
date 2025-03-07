@@ -1,43 +1,54 @@
 import express from "express";
 import "dotenv/config";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
 
 const PORT = 3000;
 const app = express();
 
 app.use(express.json());
-const users = [];
 
-app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
-  users.push({
-    username,
-    password: hashedPassword,
-  });
-  res.send("User Registered successfully");
+app.get("/api/products", (req, res) => {
+  const products = [
+    {
+      name: "Laptop",
+      price: "20000",
+      id: 1,
+    },
+    {
+      name: "Mobile",
+      price: "20000",
+      id: 2,
+    },
+  ];
+
+  return res.status(200).json({ products });
 });
 
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find((u) => u.username === username);
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.send("Unathorized access");
+app.get("/api/products/:id", (req, res) => {
+  const products = [
+    {
+      name: "Laptop",
+      price: "20000",
+      id: 1,
+    },
+    {
+      name: "Mobile",
+      price: "20000",
+      id: 2,
+    },
+  ];
+
+  const product = products.find((p) => p.id === Number(req.params.id));
+  if (!product) {
+    return res.status(404).json("Product not found");
   }
-
-  const token = jwt.sign({ username }, "test#123");
-  res.json({ token });
+  res.json({ product });
 });
 
-app.get("/dashboard", (req, res) => {
-  const token = req.header("token");
-  const decodedToken = jwt.verify(token, "test#123");
-
-  if (decodedToken.username) {
-    res.send(`Welcome, ${decodedToken.username}`);
-  } else {
-    res.send("Access Denied");
+app.post("/api/products", (req, res) => {
+  const newProduct = req.body;
+  newProduct.id = Date.now();
+  if (newProduct) {
+    res.status(200).json({ newProduct });
   }
 });
 
